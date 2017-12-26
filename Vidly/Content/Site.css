@@ -22,3 +22,16 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* Added the following classes in order to highlight the error messages and respective entry text boxes */
+.field-validation-error {
+    color: red; 
+}
+
+.input-validation-error {
+    border: 2px solid red;
+}
+
+.validation-summary-errors {
+    color: red ;        /* This will be the properties of the summarized list of errors or the error comment. */
+}

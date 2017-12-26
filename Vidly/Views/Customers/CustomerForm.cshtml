@@ -1,0 +1,49 @@
+﻿@* @model Vidly.Models.Customer  - We originally defined the @model as simply Vidley.Models.Customer, but now we want to use the NewCustomersViewModel which also contains memberships *@
+@model Vidly.ViewModels.CustomerFormViewModel
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>New Customer</h2>
+
+@* The @Hteml.BeginForm by itself will render the <form> tag, but by using "@using", at end of the using block, the object returned
+    from Html.BeginForm will be disposed and the dispose method with cause the </form> to be rendered. *@
+@using (@Html.BeginForm("Save", "Customers"))
+{
+    @Html.ValidationSummary(true, "Please correct the following errors:")   //Validation Summary causes the list of errors to appear here as well.
+                                                                            //NOTE:  First parm of true, means to surpress the list of errors here.
+    <div class="form-group">
+        @* In order to be modern and responsive, Bootstrap needs class "form-group" to be wrapped around each input field. *@
+        @Html.LabelFor(m => m.Customer.Name)      @* Lamda expression: "m as in model goes to m.Name".  This causes Razor View engine to use m.Name as value for our label. *@
+        @Html.TextBoxFor(m => m.Customer.Name, new { @class = "form-control" })   @* The second optional parameter will cause Bootstrap to render the text box in a modern way:  new { @class = "form-control" } *@
+        @Html.ValidationMessageFor(m => m.Customer.Name)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Customer.MembershipTypeId)
+        @Html.DropDownListFor(m => m.Customer.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "Select Membership Type", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Customer.MembershipTypeId)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Customer.Birthdate)
+        @Html.TextBoxFor(m => m.Customer.Birthdate, "{0:MMM d, yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Customer.Birthdate)
+    </div>
+
+    <div class="checkbox">
+        <label>
+            @Html.CheckBoxFor(m => m.Customer.IsSubscribedToNewsletter) Subscribed to Newletter?
+        </label>
+    </div>
+
+    @Html.HiddenFor(m => m.Customer.Id)
+    @Html.AntiForgeryToken()    
+    <button class="btn btn-primary">Save</button>
+}
+
+@*@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}*@

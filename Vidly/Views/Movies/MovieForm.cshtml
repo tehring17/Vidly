@@ -1,0 +1,46 @@
+﻿@model Vidly.ViewModels.MovieFormViewModel
+@{
+    ViewBag.Title = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Title</h2>
+
+@* The @Hteml.BeginForm by itself will render the <form> tag, but by using "@using", at end of the using block, the object returned
+    from Html.BeginForm will be disposed and the dispose method with cause the </form> to be rendered. *@
+@using (@Html.BeginForm("Save", "Movies"))
+{
+    @Html.ValidationSummary(true, "Please correct the following errors:")   //Validation Summary causes the list of errors to appear here as well.
+                                                                            //NOTE:  First parm of true, means to surpress the list of errors here.
+    <div class="form-group">
+        @* In order to be modern and responsive, Bootstrap needs class "form-group" to be wrapped around each input field. *@
+        @Html.LabelFor(m => m.Name)      @* Lamda expression: "m as in model goes to m.Name".  This causes Razor View engine to use m.Name as value for our label. *@
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })   @* The second optional parameter will cause Bootstrap to render the text box in a modern way:  new { @class = "form-control" } *@
+        @Html.ValidationMessageFor(m => m.Name)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ReleaseDate)
+        @Html.TextBoxFor(m => m.ReleaseDate, "{0:MMM d, yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ReleaseDate)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.GenreId)
+        @Html.DropDownListFor(m => m.GenreId, new SelectList(Model.Genres, "Id", "Name"), "Select Genre", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.GenreId)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.NumberInStock)
+        @Html.TextBoxFor(m => m.NumberInStock, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.NumberInStock)
+    </div>
+
+    //@Html.Hidden("Movie.Id", (Model.Movie !=null) ? Model.Id : 0)   //(If Model.Move is NOT null, then use the Model.Move.Id.  Otherwise, use 0)  This line is a way of passing the Movie.Id so it is set to an initial value, and we don't get an error.  The problem is that if the Property name changes, this will break.
+    @Html.HiddenFor(m => m.Id)
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-primary">Save</button>
+}
+
+
